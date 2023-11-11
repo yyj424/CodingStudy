@@ -1,0 +1,48 @@
+#다른 정답 코드
+def solution(id_list, report, k):
+    answer = [0] * len(id_list) #id_list idx = answer idx 각 유저의 위치 동일
+    report_dict = {id : [] for id in id_list}
+    
+    for r in set(report): #처음부터 report를 set으로 변환해서 사용
+        user, user_report = r.split()
+        report_dict[user_report].append(user)
+
+    for value in report_dict.values():
+        if len(value) >= k:
+            for user in value:
+                answer[id_list.index(user)] += 1 #id_list에서 해당 user의 index를 가져옴
+    #ex frodo : [muzi, apeach] -> muzi, apeach idx 값 증가
+
+    return answer
+
+### 처음 작성했던 코드 ###
+'''
+점수 100.0
+
+<떠올렸던 방법>
+딕셔너리,집합 활용
+
+<보완이 필요한 부분>
+시간, 공간 복잡도 등을 고려하지 않아 효율성이 떨어짐
+변수명을 고려하지 않아서 코드 이해가 어려움
+'''
+def solution(id_list, report, k):
+    answer = []
+    stop = []
+    
+    user_dict = {i:[] for i in id_list} #내가 신고한 사람 목록
+    id_dict = {i:set([]) for i in id_list} #나를 신고한 사람 목록
+    
+    for r in report:
+        user, reported = r.split()
+        id_dict[reported].add(user)
+        user_dict[user].append(reported)
+    
+    for i in id_dict:
+        if len(id_dict[i]) >= k:
+            stop.append(i)
+    
+    for i in user_dict:
+        answer.append(len(set(stop) & set(user_dict[i])))
+    
+    return answer
