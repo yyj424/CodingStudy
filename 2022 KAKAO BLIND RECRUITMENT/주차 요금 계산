@@ -1,0 +1,98 @@
+#다른 정답 코드
+import collections
+import math
+
+def time_to_min(time):
+    h, m = map(int, time.split(":"))
+    return h * 60 + m
+
+def solution(fees, records):
+    answer = []
+    history = collections.defaultdict(list) #list 형태의 dictionary 생성 (출차기록)
+    
+    for record in records:
+        time, car, inout = record.split()
+        history[car].append(time_to_min(time)) #분으로 미리 시간값을 계산해서 넣어둠
+    
+    last_m = time_to_min("23:59")
+    
+    for car in sorted(history.keys()):
+        if len(history[car]) % 2 != 0: #홀수 길이인 경우 = OUT이 마지막에 없는 경우
+            history[car].append(last_m)
+        
+        price = fees[1]
+        time = 0
+        
+        #시간 계산과 요금계산을 한번에
+        for i in range(0, len(history[car]), 2): #i+1,i = 1,0 > 3,2 > 4,3 ...
+            time += history[car][i + 1] - history[car][i]
+       	
+        if time > fees[0]:
+            price += math.ceil((time - fees[0]) / fees[2]) * fees[3] #math.ceil로 올림 계산 (올림:ceil/내림:floor)
+        
+        answer.append(price)
+    
+    return answer
+
+### 처음 작성했던 코드 ###
+'''
+점수 100.0
+
+<떠올렸던 방법>
+딕셔너리 활용
+
+<보완이 필요한 부분>
+시간, 공간 복잡도 등을 고려하지 않아 효율성이 떨어짐
+코드가 너무 길고 이해하기 어려움
+'''
+def solution(fees, records):
+    answer = []
+    
+    time_dict = {}
+    cars = {} #car : [6:24,IN]
+    
+    for r in records:
+        time, c, inout = r.split()
+        if c in cars:
+            cars[c].append((time,inout))
+        else:
+            cars[c] = [(time, inout)]
+    
+    for c in sorted(cars.keys()):
+        t_list = cars[c]
+        if t_list[-1][1] != "OUT":
+            t_list.append(("23:59", "OUT"))
+        for i in range(0, len(t_list) - 1, 2):
+            bt, bhis = t_list[i]
+            nt, nhis = t_list[i + 1]
+            
+            bh, bm = map(int, bt.split(":"))
+            nh, nm = map(int, nt.split(":"))
+            
+            time = 0
+            if nm < bm:
+                nh -= 1
+                time += (60 + nm - bm)
+            else:
+                time += (nm - bm)
+            time += (nh - bh) * 60
+            
+            if c in time_dict:
+                time_dict[c] += time
+            else:
+                time_dict[c] = time
+    
+    for t in time_dict.values():
+        price = fees[1]
+        if t <= fees[0]:
+            answer.append(price)
+        else:
+            left = (t - fees[0]) % fees[2]
+            if left > 0:
+                calc = (t - fees[0]) // fees[2] + 1
+            else:
+                calc = (t - fees[0]) // fees[2]
+            price += calc * fees[3]
+            answer.append(price)
+    
+    return answer
