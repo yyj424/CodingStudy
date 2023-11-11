@@ -1,0 +1,60 @@
+#정답 코드
+import math
+def solution(n, k):
+    answer = 0
+    
+    k_num = convert_n(n, k)
+    
+    s_list = k_num.split("0")
+    
+    for s in s_list:
+        if len(s) > 0: 
+            if isPrime(int(s)):
+                answer += 1
+    
+    return answer
+
+def convert_n(n, k):
+    k_num = ""
+    while n >= k:
+        n, m = divmod(n, k)
+        k_num = str(m) + k_num
+    return str(n) + k_num
+
+def isPrime(num):
+    if num == 1:
+        return False
+    for i in range(2, int(math.sqrt(num)) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+### 처음 작성했던 코드 ###
+'''
+점수 88.1 (tc 1번 실패-시간초과)
+<보완이 필요했던 부분>
+1. N진수 변환 알고리즘 -> divmod 활용
+2. 소수 판별 알고리즘 -> 제곱근 사용 (int(math.sqrt(num)) 또는 int(num ** 0.5))
+'''
+def solution(n, k):
+    answer = 0
+    
+    k_num = ""
+    while n != 0:
+        k_num = str(n % k) + k_num
+        n = n // k
+    
+    s_list = k_num.split("0")
+    
+    for s in s_list:
+        if len(s) != 0 and int(s) != 1: 
+            if isPrime(int(s)):
+                answer += 1
+    
+    return answer
+
+def isPrime(num):
+    for i in range(2, num):
+        if num % i == 0:
+            return False
+    return True
