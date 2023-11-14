@@ -1,0 +1,57 @@
+#정답 코드 (1)
+def solution(info, edges):
+    visited = [0] * len(info) #방문한 노드 저장
+    visited[0] = 1 #루트 노드 방문 처리
+    answer = []
+
+    def dfs(sheep, wolf):
+        if sheep > wolf:
+            answer.append(sheep) #양이 늑대보다 많으면 answer에 모은 양의 수를 저장
+        else:
+            return #아닐 경우 돌아간다 (양이 잡아 먹히니까)
+        
+        for p, c in edges:
+            if visited[p] and not visited[c]: #부모를 방문하고 자식을 방문 안했을 때
+                visited[c] = 1 #자식 방문 처리
+                if info[c] == 0: #자식 노드에 양이 있다면
+                    dfs(sheep + 1, wolf) #양의 수를 증가 시키고 재탐색
+                else:
+                    dfs(sheep, wolf + 1) #늑대 수를 증가 시키고 재탐색
+                visited[c] = 0
+        
+    dfs(1, 0) #0번 노드에는 항상 양이 있다
+    
+    return max(answer)
+
+#정답 코드 (2)
+def solution(info, edges):
+    answer = 0
+    graph = [[] for _ in range(len(info))] #그래프 구조 생성
+
+    for a, b in edges:
+        graph[a].append(b)
+
+    def dfs(idx, sheep, wolf, route):
+        nonlocal answer
+        if info[idx] == 0: #현재 노드가 양이면
+            sheep += 1
+            answer = max(answer, sheep) #양의 수 갱신
+        else:
+            wolf += 1
+
+        if sheep <= wolf: #탐색 종료 조건 : 양 <= 늑대 갈 수 없는 노드로 판단
+            return
+
+        route.extend(graph[idx]) #현재 정점의 자식 노드를 이동 가능한 정점에 넣기
+
+        for r in route:
+            dfs(r, sheep, wolf, [i for i in route if i != r]) #재귀 호출 (현재 노드는 방문했으니 제외)
+    
+    dfs(0, 0, 0, []) #현재 노드, 양 수, 늑대 수, 다음 노드 리스트(이동 가능한 리스트)
+    return answer
+
+### 풀지 못했음 ###
+'''
+<떠올렸던 방법>
+경로를 알아야 한다 -> dfs
+'''
