@@ -1,0 +1,66 @@
+#정답 코드
+def solution(board, skill):  
+    answer = 0
+    record = [[0] * (len(board[0]) + 1) for _ in range(len(board) + 1)] #누적합을 사용한 시간 복잡도 줄이기
+    
+    N = len(board)
+    M = len(board[0])
+
+    #누적합 기록
+    for t, r1, c1, r2, c2, d in skill:
+        record[r1][c1] += d if t == 2 else -d
+        record[r1][c2 + 1] += d if t == 1 else -d
+        record[r2 + 1][c1] += d if t == 1 else -d
+        record[r2 + 1][c2 + 1] += d if t == 2 else -d
+        
+    #행 기준 누적합
+    for i in range(N):
+        for j in range(M):
+            record[i][j + 1] += record[i][j]
+            
+    #열 기준 누적합
+    for j in range(M):
+        for i in range(N):
+            record[i + 1][j] += record[i][j]
+    
+    #기존 배열과의 합
+    for i in range(N):
+        for j in range(M):
+            board[i][j] += record[i][j]
+            if board[i][j] > 0: 
+                answer += 1
+            
+    return answer
+
+### 처음 작성했던 코드 ###
+'''
+점수 53.8 (tc 효율성 테스트-시간초과)
+
+<떠올렸던 방법>
+반복문
+
+<보완이 필요한 부분>
+효율성 판단
+누적합 개념
+'''
+def solution(board, skill):
+    answer = 0
+    
+    N = len(board)
+    M = len(board[0])
+    
+    for s in skill:
+        t, r1, c1, r2, c2, d = s
+        for r in range(r1, r2 + 1):
+            for c in range(c1, c2 + 1):
+                if t == 1:
+                    board[r][c] -= d
+                else:
+                    board[r][c] += d
+    
+    for i in range(N):
+        for j in range(M):
+            if board[i][j] > 0:
+                answer += 1
+    
+    return answer
