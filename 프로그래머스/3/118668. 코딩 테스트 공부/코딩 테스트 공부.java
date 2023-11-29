@@ -36,7 +36,7 @@ class Solution {
         }
 
         //[알고력][코딩력] 상태에 도달하는 최단 시간 > 답은 [목표알고력][목표코딩력]
-        int[][] dp = new int[targetAl + 2][targetCo + 2];
+        int[][] dp = new int[targetAl + 1][targetCo + 1];
 
         for (int i=alp; i<=targetAl; i++) {
             for (int j=cop; j<=targetCo; j++) {
@@ -48,10 +48,13 @@ class Solution {
 
         for(int i=alp; i<=targetAl; i++){
             for(int j=cop; j<=targetCo; j++){
-
-                dp[i+1][j]=Math.min(dp[i+1][j],dp[i][j]+1);
-
-                dp[i][j+1]=Math.min(dp[i][j+1],dp[i][j]+1);
+                if (i + 1 <= targetAl) {
+                    dp[i+1][j]=Math.min(dp[i+1][j],dp[i][j]+1);
+                }
+                
+                if (j + 1 <= targetCo) {
+                    dp[i][j+1]=Math.min(dp[i][j+1],dp[i][j]+1);
+                }
 
                 for(int[] p :problems){
                     if(i>=p[0] && j>=p[1]){
