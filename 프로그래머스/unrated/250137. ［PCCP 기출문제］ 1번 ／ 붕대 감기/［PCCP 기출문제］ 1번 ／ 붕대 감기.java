@@ -1,5 +1,6 @@
 //시간 - 10:45 ~ (1시간 제한)
-//기록 11:11 - 86.7점 - 6번,9번 실패
+//기록 11:11 - 86.7점 (6번,9번 실패)
+//기록 11:12 - 100점 (반복 중 체력이 소진될 경우 조건 추가)
 class Solution {
     public int solution(int[] bandage, int health, int[][] attacks) {
         int curHealth = health;
